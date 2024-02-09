@@ -1,5 +1,8 @@
 .devenv
 
+# Spring Initializer
+HELP.md
+
 # Created by https://www.toptal.com/developers/gitignore/api/vim,asdf,java,macos,direnv,windows,intellij+all,visualstudiocode,maven
 # Edit at https://www.toptal.com/developers/gitignore?templates=vim,asdf,java,macos,direnv,windows,intellij+all,visualstudiocode,maven
 
