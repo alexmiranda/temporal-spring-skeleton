@@ -3,7 +3,9 @@ package io.github.alexmiranda.samples.temporal_poc.controllers;
 import io.github.alexmiranda.samples.temporal_poc.domain.OnboardingCaseRepository;
 import io.github.alexmiranda.samples.temporal_poc.domain.TaskRepository;
 import io.github.alexmiranda.samples.temporal_poc.messages.EnrichAndVerifyRequestIn;
+import io.github.alexmiranda.samples.temporal_poc.messages.TaskCompleted;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ public class TaskController {
     private final TaskRepository taskRepository;
     private final OnboardingCaseRepository caseRepository;
     private final TaskMapper mapper;
+    private final ApplicationEventPublisher publisher;
 
     @GetMapping(path = "/tasklist")
     public String list(Model model) {
@@ -36,8 +39,8 @@ public class TaskController {
         return tasktype;
     }
 
-    @PostMapping(path = "/{tasktype}")
-    public String update(Model model, @PathVariable String tasktype, @RequestParam long id, @ModelAttribute("request") EnrichAndVerifyRequestIn in) {
+    @PostMapping(path = "/{tasktype}", params = "save")
+    public String save(Model model, @PathVariable String tasktype, @RequestParam long id, @ModelAttribute("request") EnrichAndVerifyRequestIn in) {
         var task = taskRepository.findById(id).get();
         var entity = caseRepository.findById(task.getCaseId()).get();
         mapper.update(entity, in);
@@ -47,6 +50,18 @@ public class TaskController {
         model.addAttribute("request", request);
         model.addAttribute("countryList", countryList());
         return tasktype;
+    }
+
+    @PostMapping(path = "/{tasktype}", params = "submit-for-review")
+    public String submitForReview(Model model, @PathVariable String tasktype, @RequestParam long id, @ModelAttribute("request") EnrichAndVerifyRequestIn in) {
+        var task = taskRepository.findById(id).get();
+        var entity = caseRepository.findById(task.getCaseId()).get();
+        mapper.update(entity, in);
+        caseRepository.save(entity);
+        task.markCompleted();
+        taskRepository.save(task);
+        publisher.publishEvent(new TaskCompleted(task.getId(), entity.getWorkflowId().toString(), task.getTaskType()));
+        return "redirect:/ui/tasks/tasklist";
     }
 
     private static Collection<String> countryList() {

@@ -34,4 +34,8 @@ public class Task {
         this.taskType = taskType;
         this.createdAt = LocalDateTime.now();
     }
+
+    public void markCompleted() {
+        this.completedAt = LocalDateTime.now();
+    }
 }
