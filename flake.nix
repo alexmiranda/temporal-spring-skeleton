@@ -26,7 +26,7 @@
             modules = [{
               # https://devenv.sh/reference/options/
               dotenv.enable = true;
-              packages = with pkgs; [ jdk17_headless nixfmt ];
+              packages = with pkgs; [ jdk17_headless nixfmt temporal-cli ];
               env.JAVA_HOME = pkgs.jdk17_headless;
 
               enterShell = ''

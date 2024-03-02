@@ -48,7 +48,7 @@ services:
     networks:
       - temporal-network
     ports:
-      - 7233:7233
+      - ${TEMPORAL_PORT}:${TEMPORAL_PORT}
     labels:
       kompose.volume.type: configMap
     volumes:

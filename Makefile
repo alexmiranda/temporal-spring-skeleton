@@ -31,3 +31,7 @@ ifndef IN_NIX_SHELL
 endif
 	devenv up
 
+.PHONY: test-temporal-connection
+test-temporal-connection:
+	curl -t DUMMY=1 -s telnet://127.0.0.1:${TEMPORAL_PORT} --connect-timeout 2 -o /dev/null < /dev/null || test "$$?" -eq 48
+	@echo "Successfully connected to temporal cluster on port ${TEMPORAL_PORT}"
