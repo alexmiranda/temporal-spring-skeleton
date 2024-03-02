@@ -3,6 +3,7 @@ package io.github.alexmiranda.samples.temporal_poc.controllers;
 import io.github.alexmiranda.samples.temporal_poc.domain.TaskRepository;
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskIn;
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskOut;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ public class TaskRestController {
     private final TaskMapper mapper;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
     public ResponseEntity<CreateTaskOut> create(@RequestBody CreateTaskIn in) {
         var entity = mapper.toEntity(in);
         entity = repository.save(entity);

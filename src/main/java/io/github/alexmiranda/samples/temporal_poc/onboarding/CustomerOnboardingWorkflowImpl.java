@@ -14,16 +14,27 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
         .setStartToCloseTimeout(Duration.ofSeconds(60))
         .build();
 
-    private final EnrichAndVerifyRequestActivity enrichAndVerifyRequestActivity = Workflow.newActivityStub(EnrichAndVerifyRequestActivity.class, options);
+    private final CustomerOnboardingActivities customerOnboardingActivities = Workflow.newActivityStub(CustomerOnboardingActivities.class, options);
 
     private boolean caseVerified = false;
+    private boolean caseReviewed = false;
+    private boolean caseApproved = false;
+    private boolean screeningRequired = false;
     private List<String> taskList = new ArrayList<>();
 
     @Override
     public void execute(String caseId) {
         log.info("New workflow started with caseId {}", caseId);
-        enrichAndVerifyRequestActivity.createTask(caseId);
-        Workflow.await(() -> caseVerified);
+        do {
+            customerOnboardingActivities.createTask(caseId, "EnrichAndVerifyRequest");
+            Workflow.await(() -> this.caseVerified);
+            customerOnboardingActivities.createTask(caseId, "ReviewAndAmendRequest");
+            Workflow.await(() -> this.caseReviewed);
+            if (this.caseReviewed && !this.caseApproved) {
+                this.caseVerified = false;
+                this.caseReviewed = false;
+            }
+        } while (!this.caseApproved);
         log.info("Workflow completed with caseId {}", caseId);
     }
 
@@ -33,5 +44,15 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
         this.caseVerified = true;
         this.taskList.add(taskId);
         log.info("Signal signalCaseVerified with taskId {} completed", taskId);
+    }
+
+    @Override
+    public void signalCaseReviewed(String taskId, boolean approved, boolean screeningRequired) {
+        log.info("Signal signalCaseReviewed with taskId {} received", taskId);
+        this.caseReviewed = true;
+        this.caseApproved = approved;
+        this.screeningRequired = screeningRequired;
+        this.taskList.add(taskId);
+        log.info("Signal signalCaseReviewed with taskId {} completed", taskId);
     }
 }

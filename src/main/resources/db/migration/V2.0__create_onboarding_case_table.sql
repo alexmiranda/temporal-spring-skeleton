@@ -17,5 +17,6 @@ CREATE TABLE "onboarding_case" (
   "home_phone" VARCHAR(15),
   "whatsapp" VARCHAR(15),
   "email" VARCHAR(255),
+  "screening_required" NUMBER(1) DEFAULT 0 NOT NULL,
   PRIMARY KEY ("id")
 );

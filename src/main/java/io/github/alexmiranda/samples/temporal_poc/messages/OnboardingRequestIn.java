@@ -3,7 +3,7 @@ package io.github.alexmiranda.samples.temporal_poc.messages;
 import lombok.Data;
 
 @Data
-public class EnrichAndVerifyRequestIn {
+public class OnboardingRequestIn {
     private String id;
     private String firstName;
     private String lastName;
@@ -19,5 +19,7 @@ public class EnrichAndVerifyRequestIn {
     private String homePhone;
     private String whatsApp;
     private String email;
+    private Boolean screeningRequired;
     private boolean completed;
+    private String action;
 }

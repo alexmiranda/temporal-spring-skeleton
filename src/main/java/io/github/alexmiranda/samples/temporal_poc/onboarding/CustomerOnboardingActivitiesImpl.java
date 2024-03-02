@@ -11,14 +11,14 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class EnrichAndVerifyRequestActivityImpl implements EnrichAndVerifyRequestActivity {
+public class CustomerOnboardingActivitiesImpl implements CustomerOnboardingActivities {
     private final TaskClient taskClient;
 
     @Override
-    public String createTask(String caseId) {
+    public String createTask(String caseId, String taskType) {
         try {
-            log.info("Activity {} started", EnrichAndVerifyRequestActivityImpl.class);
-            var payload = CreateTaskIn.builder().taskType("EnrichAndVerifyRequest").caseId(caseId).build();
+            log.info("Activity {} started", CustomerOnboardingActivitiesImpl.class);
+            var payload = CreateTaskIn.builder().taskType(taskType).caseId(caseId).build();
             var response = taskClient.create(payload);
             if (response.getStatusCode().is2xxSuccessful()) {
                 var body = Objects.requireNonNull(response.getBody());

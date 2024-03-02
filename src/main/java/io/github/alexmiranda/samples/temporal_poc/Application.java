@@ -2,12 +2,9 @@ package io.github.alexmiranda.samples.temporal_poc;
 
 import io.github.alexmiranda.samples.temporal_poc.domain.OnboardingCase;
 import io.github.alexmiranda.samples.temporal_poc.domain.OnboardingCaseRepository;
-import io.github.alexmiranda.samples.temporal_poc.hello.GreetingActivityImpl;
-import io.github.alexmiranda.samples.temporal_poc.hello.GreetingWorkflowImpl;
 import io.github.alexmiranda.samples.temporal_poc.onboarding.CustomerOnboardingWorkflow;
 import io.github.alexmiranda.samples.temporal_poc.onboarding.CustomerOnboardingWorkflowImpl;
-import io.github.alexmiranda.samples.temporal_poc.onboarding.EnrichAndVerifyRequestActivity;
-import io.github.alexmiranda.samples.temporal_poc.onboarding.EnrichAndVerifyRequestActivityImpl;
+import io.github.alexmiranda.samples.temporal_poc.onboarding.CustomerOnboardingActivities;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowClientOptions;
 import io.temporal.client.WorkflowOptions;
@@ -60,7 +57,7 @@ public class Application {
                 var factory = WorkerFactory.newInstance(client);
                 var worker = factory.newWorker("CustomerOnboardingTaskQueue");
                 worker.registerWorkflowImplementationTypes(CustomerOnboardingWorkflowImpl.class);
-                worker.registerActivitiesImplementations(applicationContext.getBean(EnrichAndVerifyRequestActivity.class));
+                worker.registerActivitiesImplementations(applicationContext.getBean(CustomerOnboardingActivities.class));
                 factory.start();
 
                 // create a few test data...

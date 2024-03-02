@@ -15,8 +15,10 @@ public class TaskCompletedListener {
     @EventListener
     public void handleTaskCompleted(TaskCompleted event) {
         var workflow = workflowClient.newWorkflowStub(CustomerOnboardingWorkflow.class, event.getWorkflowId());
+        var taskId = Long.toString(event.getTaskId());
         switch (event.getTaskType()) {
-            case EnrichAndVerifyRequest -> workflow.signalCaseVerified(Long.toString(event.getTaskId()));
+            case EnrichAndVerifyRequest -> workflow.signalCaseVerified(taskId);
+            case ReviewAndAmendRequest -> workflow.signalCaseReviewed(taskId, event.isApproved(), event.isScreeningRequired());
         }
     }
 }

@@ -81,6 +81,10 @@ public class OnboardingCase {
     @Column(name = "email")
     private String email;
 
+    @Setter
+    @Column(name = "screening_required")
+    private boolean screeningRequired;
+
     protected OnboardingCase() {
     }
 
