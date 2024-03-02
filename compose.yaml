@@ -58,8 +58,9 @@ services:
     depends_on:
       - temporal
     environment:
-      - TEMPORAL_ADDRESS=temporal:7233
-      - TEMPORAL_CLI_ADDRESS=temporal:7233
+      - TEMPORAL_ADDRESS=temporal:${TEMPORAL_PORT}
+      - TEMPORAL_CLI_ADDRESS=temporal:${TEMPORAL_PORT}
+      - TEMPORAL_NAMESPACE=${TEMPORAL_NAMESPACE}
     image: temporalio/admin-tools:${TEMPORAL_VERSION}
     networks:
       - temporal-network
@@ -70,7 +71,7 @@ services:
     depends_on:
       - temporal
     environment:
-      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_ADDRESS=temporal:${TEMPORAL_PORT}
       - TEMPORAL_CORS_ORIGINS=http://localhost:3000
     image: temporalio/ui:${TEMPORAL_UI_VERSION}
     networks:
