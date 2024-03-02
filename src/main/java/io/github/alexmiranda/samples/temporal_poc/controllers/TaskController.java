@@ -4,6 +4,7 @@ import io.github.alexmiranda.samples.temporal_poc.domain.OnboardingCaseRepositor
 import io.github.alexmiranda.samples.temporal_poc.domain.TaskRepository;
 import io.github.alexmiranda.samples.temporal_poc.messages.EnrichAndVerifyRequestIn;
 import io.github.alexmiranda.samples.temporal_poc.messages.TaskCompleted;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
@@ -40,6 +41,7 @@ public class TaskController {
     }
 
     @PostMapping(path = "/{tasktype}", params = "save")
+    @Transactional
     public String save(Model model, @PathVariable String tasktype, @RequestParam long id, @ModelAttribute("request") EnrichAndVerifyRequestIn in) {
         var task = taskRepository.findById(id).get();
         var entity = caseRepository.findById(task.getCaseId()).get();
@@ -53,6 +55,7 @@ public class TaskController {
     }
 
     @PostMapping(path = "/{tasktype}", params = "submit-for-review")
+    @Transactional
     public String submitForReview(Model model, @PathVariable String tasktype, @RequestParam long id, @ModelAttribute("request") EnrichAndVerifyRequestIn in) {
         var task = taskRepository.findById(id).get();
         var entity = caseRepository.findById(task.getCaseId()).get();

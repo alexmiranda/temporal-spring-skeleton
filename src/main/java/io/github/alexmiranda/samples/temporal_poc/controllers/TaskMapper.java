@@ -17,6 +17,7 @@ public interface TaskMapper {
     @Mapping(source = "id", target = "taskId")
     CreateTaskOut toCreateTaskOut(Task entity);
 
+    @Mapping(target = "completed", ignore = true)
     EnrichAndVerifyRequestIn toEnrichAndVerifyRequestIn(OnboardingCase entity);
 
     @Mapping(target = "id", ignore = true)

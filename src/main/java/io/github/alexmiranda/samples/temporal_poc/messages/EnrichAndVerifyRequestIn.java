@@ -19,4 +19,5 @@ public class EnrichAndVerifyRequestIn {
     private String homePhone;
     private String whatsApp;
     private String email;
+    private boolean completed;
 }

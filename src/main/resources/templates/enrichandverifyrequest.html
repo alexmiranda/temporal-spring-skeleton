@@ -16,69 +16,69 @@
     <input type="hidden" th:field="*{id}">
     <div class="mb-3">
       <label for="firstName" class="form-label">First name</label>
-      <input type="text" class="form-control" id="firstName" th:field="*{firstName}">
+      <input type="text" class="form-control" id="firstName" th:field="*{firstName}" th:attrappend="readonly=${task.completedAt != null}?'readonly'">
     </div>
     <div class="mb-3">
       <label for="lastName" class="form-label">Last name</label>
-      <input type="text" class="form-control" id="lastName" th:field="*{lastName}">
+      <input type="text" class="form-control" id="lastName" th:field="*{lastName}" th:attrappend="readonly=${task.completedAt != null}?'readonly'">
     </div>
     <div class="mb-3">
       <label for="salutation" class="form-label">Salutation</label>
-      <input type="text" class="form-control" id="salutation" th:field="*{salutation}">
+      <input type="text" class="form-control" id="salutation" th:field="*{salutation}" th:attrappend="readonly=${task.completedAt != null}?'readonly'">
     </div>
     <div class="mb-3">
       <label for="dateOfBirth" class="form-label">DOB</label>
-      <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth" th:attr="value=${#dates.format(request.dateOfBirth, 'yyyy-MM-dd')}">
+      <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth" th:attr="value=${#dates.format(request.dateOfBirth, 'yyyy-MM-dd')}" th:attrappend="readonly=${task.completedAt != null}?'readonly'">
     </div>
     <div class="mb-3">
       <label for="bsn" class="form-label">BSN</label>
-      <input type="text" class="form-control" id="bsn" th:field="*{bsn}">
+      <input type="text" class="form-control" id="bsn" th:field="*{bsn}" th:attrappend="readonly=${task.completedAt != null}?'readonly'">
     </div>
   </fieldset>
   <fieldset class="row mb-3">
     <legend>Communication Section</legend>
     <div class="mb-3">
       <label for="street" class="form-label">Street</label>
-      <input type="text" class="form-control" id="street" th:field="*{street}">
+      <input type="text" class="form-control" id="street" th:field="*{street}" th:attrappend="readonly=${task.completedAt != null}?'readonly'">
     </div>
     <div class="mb-3">
       <label for="houseNumber" class="form-label">House number</label>
-      <input type="text" class="form-control" id="houseNumber" th:field="*{houseNumber}">
+      <input type="text" class="form-control" id="houseNumber" th:field="*{houseNumber}" th:attrappend="readonly=${task.completedAt != null}?'readonly'">
     </div>
     <div class="mb-3">
       <label for="city" class="form-label">City</label>
-      <input type="text" class="form-control" id="city" th:field="*{city}">
+      <input type="text" class="form-control" id="city" th:field="*{city}" th:attrappend="readonly=${task.completedAt != null}?'readonly'">
     </div>
     <div class="mb-3">
       <label for="province" class="form-label">Province</label>
-      <input type="text" class="form-control" id="province" th:field="*{province}">
+      <input type="text" class="form-control" id="province" th:field="*{province}" th:attrappend="readonly=${task.completedAt != null}?'readonly'">
     </div>
     <div class="mb-3">
       <label for="country" class="form-label">Country</label>
-      <select id="country" class="form-select" th:field="*{country}">
+      <select id="country" class="form-select" th:field="*{country}" th:attrappend="disabled=${task.completedAt != null}?'disabled'">
         <option th:each="country : ${countryList}" th:value="${country}" th:text="${country}"></option>
       </select>
     </div>
     <div class="mb-3">
       <label for="mobilePhone" class="form-label">Mobile phone</label>
-      <input type="text" class="form-control" id="mobilePhone" th:field="*{mobilePhone}">
+      <input type="text" class="form-control" id="mobilePhone" th:field="*{mobilePhone}" th:attrappend="readonly=${task.completedAt != null}?'readonly'">
     </div>
     <div class="mb-3">
       <label for="homePhone" class="form-label">Home phone</label>
-      <input type="text" class="form-control" id="homePhone" th:field="*{homePhone}">
+      <input type="text" class="form-control" id="homePhone" th:field="*{homePhone}" th:attrappend="readonly=${task.completedAt != null}?'readonly'">
     </div>
     <div class="mb-3">
       <label for="whatsApp" class="form-label">WhatsApp</label>
-      <input type="text" class="form-control" id="whatsApp" th:field="*{whatsApp}">
+      <input type="text" class="form-control" id="whatsApp" th:field="*{whatsApp}" th:attrappend="readonly=${task.completedAt != null}?'readonly'">
     </div>
     <div class="mb-3">
       <label for="email" class="form-label">Email</label>
-      <input type="email" class="form-control" id="email" th:field="*{email}">
+      <input type="email" class="form-control" id="email" th:field="*{email}" th:attrappend="readonly=${task.completedAt != null}?'readonly'">
     </div>
   </fieldset>
-  <button type="submit" class="btn btn-primary" name="save" value="save">Save</button>
-  <button type="submit" class="btn btn-success" name="submit-for-review" value="submit-for-review">Submit for review</button>
-  <a class="btn btn-secondary" href="">Cancel</a>
+  <button type="submit" class="btn btn-primary" name="save" value="save" th:if="${task.completedAt == null}">Save</button>
+  <button type="submit" class="btn btn-success" name="submit-for-review" value="submit-for-review" th:if="${task.completedAt == null}">Submit for review</button>
+  <a class="btn btn-secondary" href="" th:if="${task.completedAt == null}">Cancel</a>
 </form>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
