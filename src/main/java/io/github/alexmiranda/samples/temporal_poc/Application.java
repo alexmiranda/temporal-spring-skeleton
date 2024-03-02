@@ -1,5 +1,7 @@
 package io.github.alexmiranda.samples.temporal_poc;
 
+import io.github.alexmiranda.samples.temporal_poc.domain.OnboardingCase;
+import io.github.alexmiranda.samples.temporal_poc.domain.OnboardingCaseRepository;
 import io.github.alexmiranda.samples.temporal_poc.hello.GreetingActivityImpl;
 import io.github.alexmiranda.samples.temporal_poc.hello.GreetingWorkflowImpl;
 import io.github.alexmiranda.samples.temporal_poc.onboarding.CustomerOnboardingWorkflow;
@@ -8,6 +10,7 @@ import io.github.alexmiranda.samples.temporal_poc.onboarding.EnrichAndVerifyRequ
 import io.github.alexmiranda.samples.temporal_poc.onboarding.EnrichAndVerifyRequestActivityImpl;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowClientOptions;
+import io.temporal.client.WorkflowOptions;
 import io.temporal.serviceclient.WorkflowServiceStubs;
 import io.temporal.serviceclient.WorkflowServiceStubsOptions;
 import io.temporal.worker.WorkerFactory;
@@ -24,6 +27,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.UUID;
 
 @SpringBootApplication
 public class Application {
@@ -58,9 +62,27 @@ public class Application {
                 worker.registerWorkflowImplementationTypes(CustomerOnboardingWorkflowImpl.class);
                 worker.registerActivitiesImplementations(applicationContext.getBean(EnrichAndVerifyRequestActivity.class));
                 factory.start();
+
+                // create a few test data...
+                var repo = applicationContext.getBean(OnboardingCaseRepository.class);
+                createTestData(repo, client, "Branch-AMS", "NewAccount");
+                createTestData(repo, client, "Branch-FRA", "NewAccount");
+                createTestData(repo, client, "Branch-MAD", "NewAccount");
             } catch (Throwable e) {
                 logger.error("Failed to create Temporal client", e);
             }
+        }
+
+        private void createTestData(OnboardingCaseRepository repo, WorkflowClient client, String branchName, String requestType) {
+            var workflowId = UUID.randomUUID();
+            var entity = repo.save(new OnboardingCase(workflowId, branchName, requestType));
+            var workflow = client.newWorkflowStub(CustomerOnboardingWorkflow.class,
+                WorkflowOptions.newBuilder()
+                    .setWorkflowId(UUID.randomUUID().toString())
+                    .setWorkflowRunTimeout(Duration.ofDays(1))
+                    .setTaskQueue("CustomerOnboardingTaskQueue")
+                    .build());
+            WorkflowClient.start(workflow::execute, Long.toString(entity.getId()));
         }
     }
 }

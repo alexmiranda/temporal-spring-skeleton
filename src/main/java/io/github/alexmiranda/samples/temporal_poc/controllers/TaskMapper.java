@@ -1,10 +1,14 @@
 package io.github.alexmiranda.samples.temporal_poc.controllers;
 
+import io.github.alexmiranda.samples.temporal_poc.domain.OnboardingCase;
 import io.github.alexmiranda.samples.temporal_poc.domain.Task;
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskIn;
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskOut;
+import io.github.alexmiranda.samples.temporal_poc.messages.EnrichAndVerifyRequestIn;
+import org.mapstruct.Condition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
@@ -12,4 +16,15 @@ public interface TaskMapper {
 
     @Mapping(source = "id", target = "taskId")
     CreateTaskOut toCreateTaskOut(Task entity);
+
+    EnrichAndVerifyRequestIn toEnrichAndVerifyRequestIn(OnboardingCase entity);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dateOfBirth", dateFormat = "yyyy-MM-dd")
+    void update(@MappingTarget OnboardingCase entity, EnrichAndVerifyRequestIn in);
+
+    @Condition
+    static boolean isNotEmpty(String s) {
+        return s != null && !s.isEmpty();
+    }
 }

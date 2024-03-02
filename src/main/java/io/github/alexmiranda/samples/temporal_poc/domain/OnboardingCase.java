@@ -2,7 +2,9 @@ package io.github.alexmiranda.samples.temporal_poc.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -22,6 +24,62 @@ public class OnboardingCase {
 
     @Column(name = "request_type", nullable = false)
     private String requestType;
+
+    @Setter
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Setter
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Setter
+    @Column(name = "salutation")
+    private String salutation;
+
+    @Setter
+    @Column(name = "date_of_birth")
+    private Date dateOfBirth;
+
+    @Setter
+    @Column(name = "bsn")
+    private String bsn;
+
+    @Setter
+    @Column(name = "street")
+    private String street;
+
+    @Setter
+    @Column(name = "house_number")
+    private String houseNumber;
+
+    @Setter
+    @Column(name = "city")
+    private String city;
+
+    @Setter
+    @Column(name = "province")
+    private String province;
+
+    @Setter
+    @Column(name = "country")
+    private String country;
+
+    @Setter
+    @Column(name = "mobile_phone")
+    private String mobilePhone;
+
+    @Setter
+    @Column(name = "home_phone")
+    private String homePhone;
+
+    @Setter
+    @Column(name = "whatsapp")
+    private String whatsApp;
+
+    @Setter
+    @Column(name = "email")
+    private String email;
 
     protected OnboardingCase() {
     }
