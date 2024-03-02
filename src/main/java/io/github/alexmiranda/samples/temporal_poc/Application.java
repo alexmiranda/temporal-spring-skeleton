@@ -78,7 +78,7 @@ public class Application {
             var entity = repo.save(new OnboardingCase(workflowId, branchName, requestType));
             var workflow = client.newWorkflowStub(CustomerOnboardingWorkflow.class,
                 WorkflowOptions.newBuilder()
-                    .setWorkflowId(UUID.randomUUID().toString())
+                    .setWorkflowId(workflowId.toString())
                     .setWorkflowRunTimeout(Duration.ofDays(1))
                     .setTaskQueue("CustomerOnboardingTaskQueue")
                     .build());
