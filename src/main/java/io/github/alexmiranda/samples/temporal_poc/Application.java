@@ -2,6 +2,8 @@ package io.github.alexmiranda.samples.temporal_poc;
 
 import io.github.alexmiranda.samples.temporal_poc.hello.GreetingActivityImpl;
 import io.github.alexmiranda.samples.temporal_poc.hello.GreetingWorkflowImpl;
+import io.github.alexmiranda.samples.temporal_poc.onboarding.CustomerOnboardingWorkflow;
+import io.github.alexmiranda.samples.temporal_poc.onboarding.CustomerOnboardingWorkflowImpl;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowClientOptions;
 import io.temporal.serviceclient.WorkflowServiceStubs;
@@ -45,9 +47,8 @@ public class Application {
                 var clientOptions = WorkflowClientOptions.newBuilder().setNamespace(temporalNamespace).build();
                 var client = WorkflowClient.newInstance(service, clientOptions);
                 var factory = WorkerFactory.newInstance(client);
-                var worker = factory.newWorker("HelloWorldTaskQueue");
-                worker.registerWorkflowImplementationTypes(GreetingWorkflowImpl.class);
-                worker.registerActivitiesImplementations(new GreetingActivityImpl());
+                var worker = factory.newWorker("CustomerOnboardingTaskQueue");
+                worker.registerWorkflowImplementationTypes(CustomerOnboardingWorkflowImpl.class);
                 factory.start();
             } catch (Throwable e) {
                 logger.error("Failed to create Temporal client", e);
