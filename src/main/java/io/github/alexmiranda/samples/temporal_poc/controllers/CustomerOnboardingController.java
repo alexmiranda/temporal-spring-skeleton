@@ -33,10 +33,11 @@ public class CustomerOnboardingController {
         var workflow = workflowClient.newWorkflowStub(CustomerOnboardingWorkflow.class,
             WorkflowOptions.newBuilder()
                 .setWorkflowId(workflowId.toString())
-                .setWorkflowRunTimeout(Duration.ofSeconds(10))
+                .setWorkflowRunTimeout(Duration.ofSeconds(60))
                 .setTaskQueue("CustomerOnboardingTaskQueue")
                 .build());
-        workflow.execute(entity.getId());
+        // start the workflow async and don't wait for result
+        WorkflowClient.start(workflow::execute, Long.toString(entity.getId()));
         var responseBody = CreateCaseOut.builder().caseId(Long.toString(entity.getId())).build();
         var location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{caseId}").buildAndExpand(entity.getId()).toUri();
         return ResponseEntity.created(location).body(responseBody);

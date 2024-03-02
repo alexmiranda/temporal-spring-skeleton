@@ -6,5 +6,5 @@ import io.temporal.workflow.WorkflowMethod;
 @WorkflowInterface
 public interface CustomerOnboardingWorkflow {
     @WorkflowMethod
-    void execute(long caseId);
+    void execute(String caseId);
 }
