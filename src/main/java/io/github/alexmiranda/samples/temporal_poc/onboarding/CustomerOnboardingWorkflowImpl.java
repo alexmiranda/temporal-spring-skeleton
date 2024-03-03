@@ -18,12 +18,14 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
 
     private final CustomerOnboardingActivities customerOnboardingActivities = Workflow.newActivityStub(CustomerOnboardingActivities.class, options);
 
+    private final List<String> taskList = new ArrayList<>();
+
     private boolean caseVerified = false;
     private boolean caseReviewed = false;
     private boolean caseApproved = false;
     private boolean screeningRequired = false;
     private boolean passedScreening = false;
-    private List<String> taskList = new ArrayList<>();
+    private boolean agreementFinalised = false;
 
     @Override
     public void execute(String caseId) {
@@ -45,6 +47,9 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
                 return;
             }
         }
+
+        customerOnboardingActivities.createTask(caseId, "FinaliseAgreementRequest");
+        Workflow.await(() -> this.agreementFinalised);
 
         log.info("Workflow completed with caseId {}", caseId);
     }
@@ -74,5 +79,13 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
         this.screeningRequired = screeningRequired;
         this.taskList.add(taskId);
         log.info("Signal signalCaseReviewed with taskId {} completed", taskId);
+    }
+
+    @Override
+    public void signalAgreementFinalised(String taskId) {
+        log.info("Signal signalAgreementFinalised with taskId {} received", taskId);
+        this.agreementFinalised = true;
+        this.taskList.add(taskId);
+        log.info("Signal signalAgreementFinalised with taskId {} completed", taskId);
     }
 }

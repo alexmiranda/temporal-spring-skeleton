@@ -5,10 +5,7 @@ import io.github.alexmiranda.samples.temporal_poc.domain.Task;
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskIn;
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskOut;
 import io.github.alexmiranda.samples.temporal_poc.messages.OnboardingRequestIn;
-import org.mapstruct.Condition;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
@@ -23,6 +20,11 @@ public interface TaskMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dateOfBirth", dateFormat = "yyyy-MM-dd")
     void update(@MappingTarget OnboardingCase entity, OnboardingRequestIn in);
+
+    @AfterMapping
+    default void updateFees(@MappingTarget OnboardingCase entity) {
+        entity.recalculateFees();
+    }
 
     @Condition
     static boolean isNotEmpty(String s) {

@@ -19,6 +19,7 @@ public class TaskCompletedListener {
         switch (event.getTaskType()) {
             case EnrichAndVerifyRequest -> workflow.signalCaseVerified(taskId);
             case ReviewAndAmendRequest -> workflow.signalCaseReviewed(taskId, event.isApproved(), event.isScreeningRequired());
+            case FinaliseAgreementRequest -> workflow.signalAgreementFinalised(taskId);
         }
     }
 }

@@ -64,8 +64,8 @@ public class Application {
                 // create a few test data...
                 var repo = applicationContext.getBean(OnboardingCaseRepository.class);
                 createTestData(repo, client, "Branch-AMS", "NewAccount");
-                createTestData(repo, client, "Branch-FRA", "NewAccount");
-                createTestData(repo, client, "Branch-MAD", "NewAccount");
+//                createTestData(repo, client, "Branch-FRA", "NewAccount");
+//                createTestData(repo, client, "Branch-MAD", "NewAccount");
             } catch (Throwable e) {
                 logger.error("Failed to create Temporal client", e);
             }

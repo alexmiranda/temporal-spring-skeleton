@@ -20,6 +20,9 @@ public class OnboardingRequestIn {
     private String whatsApp;
     private String email;
     private Boolean screeningRequired;
-    private boolean completed;
+    private String cardType;
+    private Boolean usePaperCommunication;
+    private Boolean feeWaiverRequested;
     private String action;
+    private boolean completed;
 }

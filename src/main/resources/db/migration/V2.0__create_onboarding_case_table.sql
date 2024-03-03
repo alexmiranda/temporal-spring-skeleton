@@ -18,5 +18,11 @@ CREATE TABLE "onboarding_case" (
   "whatsapp" VARCHAR(15),
   "email" VARCHAR(255),
   "screening_required" NUMBER(1) DEFAULT 0 NOT NULL,
+  "card_type" VARCHAR(10),
+  "card_fees" NUMBER(10, 4),
+  "use_paper_communication" NUMBER(1),
+  "communication_fees" NUMBER(10, 4),
+  "fee_waiver_requested" NUMBER(1) DEFAULT 0,
+  "yearly_fees" NUMBER(10, 4),
   PRIMARY KEY ("id")
 );

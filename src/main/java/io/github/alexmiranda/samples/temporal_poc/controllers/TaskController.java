@@ -38,6 +38,7 @@ public class TaskController {
         model.addAttribute("task", task);
         model.addAttribute("request", request);
         model.addAttribute("countryList", countryList());
+        model.addAttribute("cardTypes", cardTypes());
         return tasktype;
     }
 
@@ -52,6 +53,7 @@ public class TaskController {
         model.addAttribute("task", task);
         model.addAttribute("request", request);
         model.addAttribute("countryList", countryList());
+        model.addAttribute("cardTypes", cardTypes());
         return tasktype;
     }
 
@@ -71,5 +73,9 @@ public class TaskController {
 
     private static Collection<String> countryList() {
         return List.of("The Netherlands", "Germany", "Spain");
+    }
+
+    private static Collection<String> cardTypes() {
+        return List.of("Master", "Visa");
     }
 }

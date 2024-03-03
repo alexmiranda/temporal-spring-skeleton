@@ -14,4 +14,7 @@ public interface CustomerOnboardingWorkflow {
 
     @SignalMethod
     void signalCaseReviewed(String taskId, boolean approved, boolean screeningRequired);
+
+    @SignalMethod
+    void signalAgreementFinalised(String taskId);
 }
