@@ -1,6 +1,8 @@
 package io.github.alexmiranda.samples.temporal_poc.onboarding;
 
+import io.github.alexmiranda.samples.temporal_poc.screening.AdditionalScreeningWorkflow;
 import io.temporal.activity.ActivityOptions;
+import io.temporal.workflow.ChildWorkflowOptions;
 import io.temporal.workflow.Workflow;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,6 +22,7 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
     private boolean caseReviewed = false;
     private boolean caseApproved = false;
     private boolean screeningRequired = false;
+    private boolean passedScreening = false;
     private List<String> taskList = new ArrayList<>();
 
     @Override
@@ -35,7 +38,24 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
                 this.caseReviewed = false;
             }
         } while (!this.caseApproved);
+
+        if (this.screeningRequired) {
+            invokeAdditionalScreening(caseId);
+            if (!this.passedScreening) {
+                return;
+            }
+        }
+
         log.info("Workflow completed with caseId {}", caseId);
+    }
+
+    private void invokeAdditionalScreening(String caseId) {
+        var childWorkflowId = Workflow.randomUUID().toString();
+        var options = ChildWorkflowOptions.newBuilder()
+            .setWorkflowId(childWorkflowId)
+            .build();
+        var additionalScreeningWorkflow = Workflow.newChildWorkflowStub(AdditionalScreeningWorkflow.class, options);
+        this.passedScreening = additionalScreeningWorkflow.performScreening(caseId);
     }
 
     @Override

@@ -5,6 +5,7 @@ import io.github.alexmiranda.samples.temporal_poc.domain.OnboardingCaseRepositor
 import io.github.alexmiranda.samples.temporal_poc.onboarding.CustomerOnboardingWorkflow;
 import io.github.alexmiranda.samples.temporal_poc.onboarding.CustomerOnboardingWorkflowImpl;
 import io.github.alexmiranda.samples.temporal_poc.onboarding.CustomerOnboardingActivities;
+import io.github.alexmiranda.samples.temporal_poc.screening.AdditionalScreeningWorkflowImpl;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowClientOptions;
 import io.temporal.client.WorkflowOptions;
@@ -56,7 +57,7 @@ public class Application {
                 var client = WorkflowClient.newInstance(service, clientOptions);
                 var factory = WorkerFactory.newInstance(client);
                 var worker = factory.newWorker("CustomerOnboardingTaskQueue");
-                worker.registerWorkflowImplementationTypes(CustomerOnboardingWorkflowImpl.class);
+                worker.registerWorkflowImplementationTypes(CustomerOnboardingWorkflowImpl.class, AdditionalScreeningWorkflowImpl.class);
                 worker.registerActivitiesImplementations(applicationContext.getBean(CustomerOnboardingActivities.class));
                 factory.start();
 
