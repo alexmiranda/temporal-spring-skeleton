@@ -1,6 +1,5 @@
-package io.github.alexmiranda.samples.temporal_poc.controllers;
+package io.github.alexmiranda.samples.temporal_poc.tasks;
 
-import io.github.alexmiranda.samples.temporal_poc.domain.TaskRepository;
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskIn;
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskOut;
 import jakarta.transaction.Transactional;

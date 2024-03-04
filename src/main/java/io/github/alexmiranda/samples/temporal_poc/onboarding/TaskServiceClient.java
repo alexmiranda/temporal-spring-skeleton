@@ -1,4 +1,4 @@
-package io.github.alexmiranda.samples.temporal_poc.domain;
+package io.github.alexmiranda.samples.temporal_poc.onboarding;
 
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskIn;
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskOut;
@@ -9,7 +9,7 @@ import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
 
 @HttpExchange(url = "/api/rest/v1/task", accept = MediaType.APPLICATION_JSON_VALUE)
-public interface TaskClient {
+public interface TaskServiceClient {
     @PostExchange()
     ResponseEntity<CreateTaskOut> create(@RequestBody CreateTaskIn in);
 }

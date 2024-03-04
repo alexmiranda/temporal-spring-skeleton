@@ -1,4 +1,4 @@
-package io.github.alexmiranda.samples.temporal_poc.controllers;
+package io.github.alexmiranda.samples.temporal_poc.tasks;
 
 import io.github.alexmiranda.samples.temporal_poc.messages.TaskCompleted;
 import io.github.alexmiranda.samples.temporal_poc.onboarding.CustomerOnboardingWorkflow;

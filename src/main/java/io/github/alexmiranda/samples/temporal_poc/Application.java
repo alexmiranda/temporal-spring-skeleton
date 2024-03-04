@@ -1,7 +1,7 @@
 package io.github.alexmiranda.samples.temporal_poc;
 
-import io.github.alexmiranda.samples.temporal_poc.domain.OnboardingCase;
-import io.github.alexmiranda.samples.temporal_poc.domain.OnboardingCaseRepository;
+import io.github.alexmiranda.samples.temporal_poc.onboarding.OnboardingCase;
+import io.github.alexmiranda.samples.temporal_poc.onboarding.OnboardingCaseRepository;
 import io.github.alexmiranda.samples.temporal_poc.onboarding.CustomerOnboardingWorkflow;
 import io.github.alexmiranda.samples.temporal_poc.onboarding.CustomerOnboardingWorkflowImpl;
 import io.github.alexmiranda.samples.temporal_poc.onboarding.CustomerOnboardingActivities;

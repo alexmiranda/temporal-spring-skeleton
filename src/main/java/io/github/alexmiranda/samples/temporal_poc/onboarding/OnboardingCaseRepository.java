@@ -1,4 +1,4 @@
-package io.github.alexmiranda.samples.temporal_poc.domain;
+package io.github.alexmiranda.samples.temporal_poc.onboarding;
 
 import org.springframework.data.repository.CrudRepository;
 

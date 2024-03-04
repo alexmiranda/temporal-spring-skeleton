@@ -1,7 +1,6 @@
-package io.github.alexmiranda.samples.temporal_poc.controllers;
+package io.github.alexmiranda.samples.temporal_poc.tasks;
 
-import io.github.alexmiranda.samples.temporal_poc.domain.OnboardingCase;
-import io.github.alexmiranda.samples.temporal_poc.domain.Task;
+import io.github.alexmiranda.samples.temporal_poc.onboarding.OnboardingCase;
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskIn;
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskOut;
 import io.github.alexmiranda.samples.temporal_poc.messages.OnboardingRequestIn;

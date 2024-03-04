@@ -1,10 +1,7 @@
-package io.github.alexmiranda.samples.temporal_poc.controllers;
+package io.github.alexmiranda.samples.temporal_poc.onboarding;
 
-import io.github.alexmiranda.samples.temporal_poc.domain.OnboardingCase;
-import io.github.alexmiranda.samples.temporal_poc.domain.OnboardingCaseRepository;
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateCaseIn;
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateCaseOut;
-import io.github.alexmiranda.samples.temporal_poc.onboarding.CustomerOnboardingWorkflow;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowOptions;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package io.github.alexmiranda.samples.temporal_poc.messages;
 
-import io.github.alexmiranda.samples.temporal_poc.domain.TaskType;
+import io.github.alexmiranda.samples.temporal_poc.tasks.TaskType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

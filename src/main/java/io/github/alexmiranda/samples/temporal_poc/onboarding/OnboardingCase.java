@@ -1,4 +1,4 @@
-package io.github.alexmiranda.samples.temporal_poc.domain;
+package io.github.alexmiranda.samples.temporal_poc.onboarding;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
