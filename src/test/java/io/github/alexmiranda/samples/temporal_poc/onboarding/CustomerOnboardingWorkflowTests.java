@@ -7,13 +7,11 @@ import io.temporal.client.WorkflowStub;
 import io.temporal.testing.TestWorkflowEnvironment;
 import io.temporal.testing.TestWorkflowExtension;
 import io.temporal.worker.Worker;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeoutException;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -128,6 +126,7 @@ public class CustomerOnboardingWorkflowTests {
                 case EnrichAndVerifyRequest -> testEnv.registerDelayedCallback(Duration.ofMillis(500), () -> workflow.signalCaseVerified("testTaskId1"));
                 case ReviewAndAmendRequest -> testEnv.registerDelayedCallback(Duration.ofMillis(500), () -> workflow.signalCaseReviewed("testTaskId2", true, true));
                 case FinaliseAgreementRequest -> testEnv.registerDelayedCallback(Duration.ofMillis(500), () -> workflow.signalAgreementFinalised("testTaskId3"));
+                case ApologiseAndAdviseRequest -> testEnv.registerDelayedCallback(Duration.ofMillis(500), () -> workflow.signalApologySent("testTaskId4"));
             }
             return "";
         }).when(activity).createTask(anyString(), anyString());
@@ -145,6 +144,7 @@ public class CustomerOnboardingWorkflowTests {
         inOrder.verify(activity, times(1)).createTask(eq("testCaseId"), eq("EnrichAndVerifyRequest"));
         inOrder.verify(activity, times(1)).createTask(eq("testCaseId"), eq("ReviewAndAmendRequest"));
         inOrder.verify(additionalScreeningWorkflow, times(1)).performScreening(eq("testCaseId"));
+        inOrder.verify(activity, times(1)).createTask(eq("testCaseId"), eq("ApologiseAndAdviseRequest"));
         inOrder.verifyNoMoreInteractions();
     }
 }

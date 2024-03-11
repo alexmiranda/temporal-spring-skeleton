@@ -17,4 +17,7 @@ public interface CustomerOnboardingWorkflow {
 
     @SignalMethod
     void signalAgreementFinalised(String taskId);
+
+    @SignalMethod
+    void signalApologySent(String taskId);
 }

@@ -4,4 +4,5 @@ public enum TaskType {
     EnrichAndVerifyRequest,
     ReviewAndAmendRequest,
     FinaliseAgreementRequest,
+    ApologiseAndAdviseRequest,
 }

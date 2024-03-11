@@ -23,6 +23,7 @@ public class OnboardingRequestIn {
     private String cardType;
     private Boolean usePaperCommunication;
     private Boolean feeWaiverRequested;
+    private String rejectionReason;
     private String action;
     private boolean completed;
 }

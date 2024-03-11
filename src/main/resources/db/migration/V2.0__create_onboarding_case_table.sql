@@ -24,5 +24,6 @@ CREATE TABLE "onboarding_case" (
   "communication_fees" NUMBER(10, 4),
   "fee_waiver_requested" NUMBER(1) DEFAULT 0,
   "yearly_fees" NUMBER(10, 4),
+  "rejection_reason" VARCHAR(255),
   PRIMARY KEY ("id")
 );

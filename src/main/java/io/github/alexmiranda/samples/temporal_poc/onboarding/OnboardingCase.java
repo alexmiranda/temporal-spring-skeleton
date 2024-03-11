@@ -1,7 +1,9 @@
 package io.github.alexmiranda.samples.temporal_poc.onboarding;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -12,6 +14,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "onboarding_case")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OnboardingCase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -108,8 +111,9 @@ public class OnboardingCase {
     @Column(name = "yearly_fees")
     private Float yearlyFees;
 
-    protected OnboardingCase() {
-    }
+    @Setter
+    @Column(name = "rejection_reason")
+    private String rejectionReason;
 
     public OnboardingCase(UUID workflowId, String branchName, String requestType) {
         this.workflowId = workflowId;

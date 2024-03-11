@@ -26,6 +26,7 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
     private boolean screeningRequired = false;
     private boolean screeningPassed = false;
     private boolean agreementFinalised = false;
+    private boolean apologySent = false;
 
     @Override
     public void execute(String caseId) {
@@ -41,15 +42,23 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
             }
         } while (!this.caseApproved);
 
+        var caseToBeRejected = false;
         if (this.screeningRequired) {
             invokeAdditionalScreening(caseId);
             if (!this.screeningPassed) {
-                return;
+                caseToBeRejected = true;
             }
         }
 
-        customerOnboardingActivities.createTask(caseId, "FinaliseAgreementRequest");
-        Workflow.await(() -> this.agreementFinalised);
+        if (!caseToBeRejected) {
+            customerOnboardingActivities.createTask(caseId, "FinaliseAgreementRequest");
+            Workflow.await(() -> this.agreementFinalised);
+        }
+
+        if (caseToBeRejected) {
+            customerOnboardingActivities.createTask(caseId, "ApologiseAndAdviseRequest");
+            Workflow.await(() -> this.apologySent);
+        }
 
         log.info("Workflow completed with caseId {}", caseId);
     }
@@ -87,5 +96,13 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
         this.agreementFinalised = true;
         this.taskList.add(taskId);
         log.info("Signal signalAgreementFinalised with taskId {} completed", taskId);
+    }
+
+    @Override
+    public void signalApologySent(String taskId) {
+        log.info("Signal signalApologySent with taskId {} received", taskId);
+        this.apologySent = true;
+        this.taskList.add(taskId);
+        log.info("Signal signalApologySent with taskId {} completed", taskId);
     }
 }
