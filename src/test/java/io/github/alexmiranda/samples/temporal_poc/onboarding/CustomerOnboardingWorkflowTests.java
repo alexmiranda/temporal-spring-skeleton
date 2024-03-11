@@ -1,5 +1,6 @@
 package io.github.alexmiranda.samples.temporal_poc.onboarding;
 
+import io.github.alexmiranda.samples.temporal_poc.messages.CustomerData;
 import io.github.alexmiranda.samples.temporal_poc.screening.AdditionalScreeningWorkflow;
 import io.github.alexmiranda.samples.temporal_poc.tasks.TaskType;
 import io.temporal.client.WorkflowClient;
@@ -35,7 +36,7 @@ public class CustomerOnboardingWorkflowTests {
             var taskType = Enum.valueOf(TaskType.class, i.getArgument(1, String.class));
             switch (taskType) {
                 case EnrichAndVerifyRequest -> workflow.signalCaseVerified("testTaskId1");
-                case ReviewAndAmendRequest -> workflow.signalCaseReviewed("testTaskId2", true, false);
+                case ReviewAndAmendRequest -> workflow.signalCaseReviewed("testTaskId2", true, false, null);
                 case FinaliseAgreementRequest -> workflow.signalAgreementFinalised("testTaskId3");
             }
             return "";
@@ -111,7 +112,7 @@ public class CustomerOnboardingWorkflowTests {
                 var taskType = Enum.valueOf(TaskType.class, i.getArgument(1, String.class));
                 switch (taskType) {
                     case EnrichAndVerifyRequest -> workflow.signalCaseVerified("testTaskId1");
-                    case ReviewAndAmendRequest -> workflow.signalCaseReviewed("testTaskId2", false, false);
+                    case ReviewAndAmendRequest -> workflow.signalCaseReviewed("testTaskId2", false, false, null);
                 }
                 return "";
             } finally {
@@ -140,19 +141,20 @@ public class CustomerOnboardingWorkflowTests {
 
     @Test
     public void testAdditionalScreeningPassed(TestWorkflowEnvironment testEnv, Worker worker, CustomerOnboardingWorkflow workflow) throws Exception {
+        var customerData = new CustomerData();
         var activity = mock(CustomerOnboardingActivities.class, withSettings().withoutAnnotations());
         doAnswer(i -> {
             var taskType = Enum.valueOf(TaskType.class, i.getArgument(1, String.class));
             switch (taskType) {
                 case EnrichAndVerifyRequest -> testEnv.registerDelayedCallback(Duration.ofMillis(500), () -> workflow.signalCaseVerified("testTaskId1"));
-                case ReviewAndAmendRequest -> testEnv.registerDelayedCallback(Duration.ofMillis(500), () -> workflow.signalCaseReviewed("testTaskId2", true, true));
+                case ReviewAndAmendRequest -> testEnv.registerDelayedCallback(Duration.ofMillis(500), () -> workflow.signalCaseReviewed("testTaskId2", true, true, customerData));
                 case FinaliseAgreementRequest -> testEnv.registerDelayedCallback(Duration.ofMillis(500), () -> workflow.signalAgreementFinalised("testTaskId3"));
             }
             return "";
         }).when(activity).createTask(anyString(), anyString());
         worker.registerActivitiesImplementations(activity);
         var additionalScreeningWorkflow = mock(AdditionalScreeningWorkflow.class, withSettings().withoutAnnotations());
-        doReturn(true).when(additionalScreeningWorkflow).performScreening(anyString());
+        doReturn(true).when(additionalScreeningWorkflow).performScreening(any(CustomerData.class));
         worker.registerWorkflowImplementationFactory(AdditionalScreeningWorkflow.class, () -> additionalScreeningWorkflow);
         testEnv.start();
 
@@ -163,18 +165,19 @@ public class CustomerOnboardingWorkflowTests {
         var inOrder = inOrder(activity, additionalScreeningWorkflow);
         inOrder.verify(activity, times(1)).createTask(eq("testCaseId"), eq("EnrichAndVerifyRequest"));
         inOrder.verify(activity, times(1)).createTask(eq("testCaseId"), eq("ReviewAndAmendRequest"));
-        inOrder.verify(additionalScreeningWorkflow, times(1)).performScreening(eq("testCaseId"));
+        inOrder.verify(additionalScreeningWorkflow, times(1)).performScreening(any(CustomerData.class));
         inOrder.verify(activity, times(1)).createTask(eq("testCaseId"), eq("FinaliseAgreementRequest"));
     }
 
     @Test
     public void testAdditionalScreeningFailed(TestWorkflowEnvironment testEnv, Worker worker, CustomerOnboardingWorkflow workflow) throws Exception {
+        var customerData = new CustomerData();
         var activity = mock(CustomerOnboardingActivities.class, withSettings().withoutAnnotations());
         doAnswer(i -> {
             var taskType = Enum.valueOf(TaskType.class, i.getArgument(1, String.class));
             switch (taskType) {
                 case EnrichAndVerifyRequest -> testEnv.registerDelayedCallback(Duration.ofMillis(500), () -> workflow.signalCaseVerified("testTaskId1"));
-                case ReviewAndAmendRequest -> testEnv.registerDelayedCallback(Duration.ofMillis(500), () -> workflow.signalCaseReviewed("testTaskId2", true, true));
+                case ReviewAndAmendRequest -> testEnv.registerDelayedCallback(Duration.ofMillis(500), () -> workflow.signalCaseReviewed("testTaskId2", true, true, customerData));
                 case FinaliseAgreementRequest -> testEnv.registerDelayedCallback(Duration.ofMillis(500), () -> workflow.signalAgreementFinalised("testTaskId3"));
                 case ApologiseAndAdviseRequest -> testEnv.registerDelayedCallback(Duration.ofMillis(500), () -> workflow.signalApologySent("testTaskId4"));
             }
@@ -182,7 +185,7 @@ public class CustomerOnboardingWorkflowTests {
         }).when(activity).createTask(anyString(), anyString());
         worker.registerActivitiesImplementations(activity);
         var additionalScreeningWorkflow = mock(AdditionalScreeningWorkflow.class, withSettings().withoutAnnotations());
-        doReturn(false).when(additionalScreeningWorkflow).performScreening(anyString());
+        doReturn(false).when(additionalScreeningWorkflow).performScreening(any(CustomerData.class));
         worker.registerWorkflowImplementationFactory(AdditionalScreeningWorkflow.class, () -> additionalScreeningWorkflow);
         testEnv.start();
 
@@ -193,7 +196,7 @@ public class CustomerOnboardingWorkflowTests {
         var inOrder = inOrder(activity, additionalScreeningWorkflow);
         inOrder.verify(activity, times(1)).createTask(eq("testCaseId"), eq("EnrichAndVerifyRequest"));
         inOrder.verify(activity, times(1)).createTask(eq("testCaseId"), eq("ReviewAndAmendRequest"));
-        inOrder.verify(additionalScreeningWorkflow, times(1)).performScreening(eq("testCaseId"));
+        inOrder.verify(additionalScreeningWorkflow, times(1)).performScreening(any(CustomerData.class));
         inOrder.verify(activity, times(1)).createTask(eq("testCaseId"), eq("ApologiseAndAdviseRequest"));
         inOrder.verifyNoMoreInteractions();
     }

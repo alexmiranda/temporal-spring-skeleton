@@ -87,8 +87,16 @@ public class OnboardingCase {
     private String email;
 
     @Setter
-    @Column(name = "screening_required")
-    private boolean screeningRequired;
+    @Column(name = "name_screening_required")
+    private Boolean nameScreeningRequired;
+
+    @Setter
+    @Column(name = "adverse_media_screening_required")
+    private Boolean adverseMediaScreeningRequired;
+
+    @Setter
+    @Column(name = "credit_bureau_check_required")
+    private Boolean creditBureauCheckRequired;
 
     @Setter
     @Column(name = "card_type")
@@ -154,5 +162,11 @@ public class OnboardingCase {
             return null;
         }
         return Period.between(this.dateOfBirth, today).getYears();
+    }
+
+    public boolean isScreeningRequired() {
+        return Objects.equals(this.nameScreeningRequired, true) ||
+            Objects.equals(this.adverseMediaScreeningRequired, true) ||
+            Objects.equals(this.creditBureauCheckRequired, true);
     }
 }

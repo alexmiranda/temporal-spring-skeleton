@@ -1,8 +1,8 @@
 package io.github.alexmiranda.samples.temporal_poc.onboarding;
 
+import io.github.alexmiranda.samples.temporal_poc.messages.CustomerData;
 import io.github.alexmiranda.samples.temporal_poc.screening.AdditionalScreeningWorkflow;
 import io.temporal.activity.ActivityOptions;
-import io.temporal.workflow.Async;
 import io.temporal.workflow.ChildWorkflowOptions;
 import io.temporal.workflow.Workflow;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +28,7 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
     private boolean screeningPassed = false;
     private boolean agreementFinalised = false;
     private boolean apologySent = false;
+    private CustomerData customerData;
 
     @Override
     public void execute(String caseId) {
@@ -53,7 +54,7 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
 
         var caseToBeRejected = false;
         if (this.screeningRequired) {
-            invokeAdditionalScreening(caseId);
+            invokeAdditionalScreening();
             if (!this.screeningPassed) {
                 caseToBeRejected = true;
             }
@@ -72,13 +73,13 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
         log.info("Workflow completed with caseId {}", caseId);
     }
 
-    private void invokeAdditionalScreening(String caseId) {
+    private void invokeAdditionalScreening() {
         var childWorkflowId = Workflow.randomUUID().toString();
         var options = ChildWorkflowOptions.newBuilder()
             .setWorkflowId(childWorkflowId)
             .build();
         var additionalScreeningWorkflow = Workflow.newChildWorkflowStub(AdditionalScreeningWorkflow.class, options);
-        this.screeningPassed = additionalScreeningWorkflow.performScreening(caseId);
+        this.screeningPassed = additionalScreeningWorkflow.performScreening(this.customerData);
     }
 
     @Override
@@ -90,11 +91,12 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
     }
 
     @Override
-    public void signalCaseReviewed(String taskId, boolean approved, boolean screeningRequired) {
+    public void signalCaseReviewed(String taskId, boolean approved, boolean screeningRequired, CustomerData customerData) {
         log.info("Signal signalCaseReviewed with taskId {} received", taskId);
         this.caseReviewed = true;
         this.caseApproved = approved;
         this.screeningRequired = screeningRequired;
+        this.customerData = customerData;
         this.taskList.add(taskId);
         log.info("Signal signalCaseReviewed with taskId {} completed", taskId);
     }

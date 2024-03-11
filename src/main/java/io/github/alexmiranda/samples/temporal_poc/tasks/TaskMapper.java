@@ -6,6 +6,7 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
+    @Mapping(target = "priority", ignore = true)
     Task toEntity(CreateTaskIn in);
 
     @Mapping(source = "id", target = "taskId")
@@ -29,8 +30,11 @@ public interface TaskMapper {
         entity.recalculateFees();
     }
 
+    CustomerData toCustomerData(OnboardingCase entity);
+
     @Condition
     static boolean isNotEmpty(String s) {
         return s != null && !s.isEmpty();
     }
+
 }

@@ -19,7 +19,9 @@ public class OnboardingRequestIn {
     private String homePhone;
     private String whatsApp;
     private String email;
-    private Boolean screeningRequired;
+    private Boolean nameScreeningRequired;
+    private Boolean adverseMediaScreeningRequired;
+    private Boolean creditBureauCheckRequired;
     private String cardType;
     private Boolean usePaperCommunication;
     private Boolean feeWaiverRequested;

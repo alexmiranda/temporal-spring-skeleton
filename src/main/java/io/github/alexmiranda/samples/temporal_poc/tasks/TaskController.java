@@ -66,7 +66,8 @@ public class TaskController {
         task.markCompleted();
         taskRepository.save(task);
         boolean approved = Objects.equals(in.getAction(), "approve");
-        publisher.publishEvent(new TaskCompleted(task.getId(), entity.getWorkflowId().toString(), task.getTaskType(), approved, entity.isScreeningRequired()));
+        var customerData = mapper.toCustomerData(entity);
+        publisher.publishEvent(new TaskCompleted(task.getId(), entity.getWorkflowId().toString(), task.getTaskType(), approved, entity.isScreeningRequired(), customerData));
         return "redirect:/ui/tasks/tasklist";
     }
 

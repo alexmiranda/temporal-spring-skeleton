@@ -12,4 +12,5 @@ public class TaskCompleted {
     private final TaskType taskType;
     private final boolean approved;
     private final boolean screeningRequired;
+    private final CustomerData customerData;
 }

@@ -76,8 +76,16 @@
       <input type="email" class="form-control" id="email" th:field="*{email}" th:attrappend="readonly=${task.completedAt != null}?'readonly'">
     </div>
     <div class="form-check form-switch mb-3">
-      <input class="form-check-input" type="checkbox" role="switch" id="screeningRequired" th:field="*{screeningRequired}" th:attrappend="disabled=${task.completedAt != null}?'disabled'">
-      <label class="form-check-label" for="screeningRequired">Screening required</label>
+      <input class="form-check-input" type="checkbox" role="switch" id="nameScreeningRequired" th:field="*{nameScreeningRequired}" th:attrappend="disabled=${task.completedAt != null}?'disabled'">
+      <label class="form-check-label" for="nameScreeningRequired">Name screening required</label>
+    </div>
+    <div class="form-check form-switch mb-3">
+      <input class="form-check-input" type="checkbox" role="switch" id="adverseMediaScreeningRequired" th:field="*{adverseMediaScreeningRequired}" th:attrappend="disabled=${task.completedAt != null}?'disabled'">
+      <label class="form-check-label" for="adverseMediaScreeningRequired">Adverse media screening required</label>
+    </div>
+    <div class="form-check form-switch mb-3">
+      <input class="form-check-input" type="checkbox" role="switch" id="creditBureauCheckRequired" th:field="*{creditBureauCheckRequired}" th:attrappend="disabled=${task.completedAt != null}?'disabled'">
+      <label class="form-check-label" for="creditBureauCheckRequired">Credit bureau check required</label>
     </div>
   </fieldset>
   <button type="submit" class="btn btn-primary" name="save" value="save" th:if="${task.completedAt == null}">Save</button>
