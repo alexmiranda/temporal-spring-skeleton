@@ -14,6 +14,7 @@ public interface TaskMapper {
     CreateTaskOut toCreateTaskOut(Task entity);
 
     @Mapping(target = "completed", ignore = true)
+    @Mapping(target = "action", ignore = true)
     OnboardingRequestIn toOnboardingRequestIn(OnboardingCase entity);
 
     @Mapping(target = "id", ignore = true)
