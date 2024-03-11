@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -69,6 +70,35 @@ public class CustomerOnboardingWorkflowTests {
         var inOrder = inOrder(activity);
         inOrder.verify(activity, times(1)).createTask(eq("testCaseId"), eq("EnrichAndVerifyRequest"));
         inOrder.verify(activity, times(1)).escalateTaskPriority(eq("testTaskId1"));
+        inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    public void testAmendAndReviewTimeout(TestWorkflowEnvironment testEnv, Worker worker, CustomerOnboardingWorkflow workflow) throws Exception {
+        var activity = mock(CustomerOnboardingActivities.class, withSettings().withoutAnnotations());
+        var counter = new AtomicInteger(0);
+        doAnswer(i -> {
+            var taskType = Enum.valueOf(TaskType.class, i.getArgument(1, String.class));
+            var taskId = String.format("testTaskId%d", counter.incrementAndGet());
+            if (taskType == TaskType.EnrichAndVerifyRequest) {
+                testEnv.registerDelayedCallback(Duration.ofMillis(500), () -> workflow.signalCaseVerified(taskId));
+            }
+            return taskId;
+        }).when(activity).createTask(anyString(), anyString());
+        doNothing().when(activity).escalateTaskPriority(anyString());
+        worker.registerActivitiesImplementations(activity);
+        testEnv.start();
+
+        WorkflowClient.start(workflow::execute, "testCaseId");
+        testEnv.sleep(Duration.ofDays(3));
+
+        var untyped = WorkflowStub.fromTyped(workflow);
+        untyped.cancel();
+
+        var inOrder = inOrder(activity);
+        inOrder.verify(activity, times(1)).createTask(eq("testCaseId"), eq("EnrichAndVerifyRequest"));
+        inOrder.verify(activity, times(1)).createTask(eq("testCaseId"), eq("ReviewAndAmendRequest"));
+        inOrder.verify(activity, times(1)).escalateTaskPriority(eq("testTaskId2"));
         inOrder.verifyNoMoreInteractions();
     }
 

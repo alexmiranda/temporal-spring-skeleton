@@ -2,6 +2,7 @@ package io.github.alexmiranda.samples.temporal_poc.onboarding;
 
 import io.github.alexmiranda.samples.temporal_poc.screening.AdditionalScreeningWorkflow;
 import io.temporal.activity.ActivityOptions;
+import io.temporal.workflow.Async;
 import io.temporal.workflow.ChildWorkflowOptions;
 import io.temporal.workflow.Workflow;
 import lombok.extern.slf4j.Slf4j;
@@ -38,8 +39,12 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
                 Workflow.await(() -> this.caseVerified);
             }
 
-            customerOnboardingActivities.createTask(caseId, "ReviewAndAmendRequest");
-            Workflow.await(() -> this.caseReviewed);
+            var reviewAndAmendTaskId = customerOnboardingActivities.createTask(caseId, "ReviewAndAmendRequest");
+            if (!Workflow.await(Duration.ofDays(2), () -> this.caseReviewed)) {
+                customerOnboardingActivities.escalateTaskPriority(reviewAndAmendTaskId);
+                Workflow.await(() -> this.caseReviewed);
+            }
+
             if (this.caseReviewed && !this.caseApproved) {
                 this.caseVerified = false;
                 this.caseReviewed = false;
