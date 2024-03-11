@@ -24,7 +24,7 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
     private boolean caseReviewed = false;
     private boolean caseApproved = false;
     private boolean screeningRequired = false;
-    private boolean passedScreening = false;
+    private boolean screeningPassed = false;
     private boolean agreementFinalised = false;
 
     @Override
@@ -43,7 +43,7 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
 
         if (this.screeningRequired) {
             invokeAdditionalScreening(caseId);
-            if (!this.passedScreening) {
+            if (!this.screeningPassed) {
                 return;
             }
         }
@@ -60,7 +60,7 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
             .setWorkflowId(childWorkflowId)
             .build();
         var additionalScreeningWorkflow = Workflow.newChildWorkflowStub(AdditionalScreeningWorkflow.class, options);
-        this.passedScreening = additionalScreeningWorkflow.performScreening(caseId);
+        this.screeningPassed = additionalScreeningWorkflow.performScreening(caseId);
     }
 
     @Override
