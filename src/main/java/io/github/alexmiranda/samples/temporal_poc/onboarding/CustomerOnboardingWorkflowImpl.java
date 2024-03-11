@@ -32,8 +32,12 @@ public class CustomerOnboardingWorkflowImpl implements CustomerOnboardingWorkflo
     public void execute(String caseId) {
         log.info("New workflow started with caseId {}", caseId);
         do {
-            customerOnboardingActivities.createTask(caseId, "EnrichAndVerifyRequest");
-            Workflow.await(() -> this.caseVerified);
+            var enrichAndVerifyTaskId = customerOnboardingActivities.createTask(caseId, "EnrichAndVerifyRequest");
+            if (!Workflow.await(Duration.ofHours(1), () -> this.caseVerified)) {
+                customerOnboardingActivities.escalateTaskPriority(enrichAndVerifyTaskId);
+                Workflow.await(() -> this.caseVerified);
+            }
+
             customerOnboardingActivities.createTask(caseId, "ReviewAndAmendRequest");
             Workflow.await(() -> this.caseReviewed);
             if (this.caseReviewed && !this.caseApproved) {

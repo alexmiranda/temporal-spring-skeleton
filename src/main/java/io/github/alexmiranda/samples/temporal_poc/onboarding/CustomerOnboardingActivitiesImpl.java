@@ -1,6 +1,7 @@
 package io.github.alexmiranda.samples.temporal_poc.onboarding;
 
 import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskIn;
+import io.github.alexmiranda.samples.temporal_poc.messages.UpdateTaskPriorityIn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,18 @@ public class CustomerOnboardingActivitiesImpl implements CustomerOnboardingActiv
         } catch (Throwable e) {
             log.error("Activity failed", e);
             return "";
+        }
+    }
+
+    @Override
+    public void escalateTaskPriority(String taskId) {
+        try {
+            log.info("Activity {} started", "escalateTaskPriority");
+            var payload = new UpdateTaskPriorityIn("HIGH");
+            taskServiceClient.changePriority(taskId, payload);
+        } catch (Throwable e) {
+            log.error("Activity failed", e);
+            throw e;
         }
     }
 }

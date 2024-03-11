@@ -4,5 +4,6 @@ CREATE TABLE "task" (
   "task_type" VARCHAR(20) NOT NULL,
   "created_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   "completed_at" TIMESTAMP WITHOUT TIME ZONE,
+  "priority" VARCHAR(10) NOT NULL DEFAULT 'NORMAL',
   PRIMARY KEY ("id")
 );

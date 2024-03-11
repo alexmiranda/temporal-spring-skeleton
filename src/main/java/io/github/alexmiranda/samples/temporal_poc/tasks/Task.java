@@ -2,6 +2,7 @@ package io.github.alexmiranda.samples.temporal_poc.tasks;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +26,10 @@ public class Task {
 
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
+
+    @Setter
+    @Column(name = "priority")
+    private TaskPriority priority = TaskPriority.NORMAL;
 
     protected Task() {
     }

@@ -1,9 +1,7 @@
 package io.github.alexmiranda.samples.temporal_poc.tasks;
 
+import io.github.alexmiranda.samples.temporal_poc.messages.*;
 import io.github.alexmiranda.samples.temporal_poc.onboarding.OnboardingCase;
-import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskIn;
-import io.github.alexmiranda.samples.temporal_poc.messages.CreateTaskOut;
-import io.github.alexmiranda.samples.temporal_poc.messages.OnboardingRequestIn;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
@@ -20,6 +18,11 @@ public interface TaskMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dateOfBirth", dateFormat = "yyyy-MM-dd")
     void update(@MappingTarget OnboardingCase entity, OnboardingRequestIn in);
+
+    void update(@MappingTarget Task entity, UpdateTaskPriorityIn in);
+
+    @Mapping(target = "taskId", source = "id")
+    UpdateTaskPriorityOut toUpdateTaskPriorityOut(Task entity);
 
     @AfterMapping
     default void updateFees(@MappingTarget OnboardingCase entity) {

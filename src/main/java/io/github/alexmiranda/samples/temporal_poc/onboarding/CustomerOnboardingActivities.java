@@ -5,4 +5,5 @@ import io.temporal.activity.ActivityInterface;
 @ActivityInterface
 public interface CustomerOnboardingActivities {
     String createTask(String caseId, String taskType);
+    void escalateTaskPriority(String taskId);
 }

@@ -53,6 +53,26 @@ public class CustomerOnboardingWorkflowTests {
     }
 
     @Test
+    public void testEnrichAndVerifyTimeout(TestWorkflowEnvironment testEnv, Worker worker, CustomerOnboardingWorkflow workflow) throws Exception {
+        var activity = mock(CustomerOnboardingActivities.class, withSettings().withoutAnnotations());
+        doReturn("testTaskId1").when(activity).createTask(anyString(), anyString());
+        doNothing().when(activity).escalateTaskPriority(anyString());
+        worker.registerActivitiesImplementations(activity);
+        testEnv.start();
+
+        WorkflowClient.start(workflow::execute, "testCaseId");
+        testEnv.sleep(Duration.ofMinutes(61));
+
+        var untyped = WorkflowStub.fromTyped(workflow);
+        untyped.cancel();
+
+        var inOrder = inOrder(activity);
+        inOrder.verify(activity, times(1)).createTask(eq("testCaseId"), eq("EnrichAndVerifyRequest"));
+        inOrder.verify(activity, times(1)).escalateTaskPriority(eq("testTaskId1"));
+        inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
     public void testRejectCase(TestWorkflowEnvironment testEnv, Worker worker, CustomerOnboardingWorkflow workflow) throws Exception {
         var activity = mock(CustomerOnboardingActivities.class, withSettings().withoutAnnotations());
         var countDownLatch = new CountDownLatch(3);

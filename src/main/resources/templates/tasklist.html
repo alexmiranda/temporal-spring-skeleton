@@ -17,6 +17,7 @@
       <th scope="col">Case Id</th>
       <th scope="col">Created at</th>
       <th scope="col">Completed at</th>
+      <th scope="col">Priority</th>
     </tr>
     </thead>
     <tr th:each="task : ${tasks}">
@@ -27,6 +28,7 @@
       <td th:text="${task.caseId}"></td>
       <td th:text="${task.createdAt}"></td>
       <td th:text="${task.completedAt}"></td>
+      <td th:text="${task.priority}"></td>
     </tr>
   </table>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
